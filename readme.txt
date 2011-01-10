@@ -42,3 +42,29 @@ This section describes how to install the plugin and get it working.
 `wp-user-frontend-dashboard.png`
 `wp-user-frontend-edit-posts.png`
 `wp-user-frontend-edit-profile.png`
+
+== Frequently Asked Questions ==
+
+= Can I create new posts from frontend =
+
+Yes
+
+= Can I Edit my posts from frontend =
+
+Yes
+
+= Can I delete my posts from frontend =
+
+Yes
+
+= Can I upload photo/image/video =
+No
+
+
+== Changelog ==
+
+Nothing to say
+
+== Upgrade Notice ==
+
+Nothing to say
