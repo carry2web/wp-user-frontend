@@ -38,10 +38,10 @@ This section describes how to install the plugin and get it working.
 
 
 == Screenshots ==
-`wp-user-frontend-admin-options.png`
-`wp-user-frontend-dashboard.png`
-`wp-user-frontend-edit-posts.png`
-`wp-user-frontend-edit-profile.png`
+1. Admin panel
+2. dashboard
+3. Edit Posts
+4. Edit Profile
 
 == Frequently Asked Questions ==
 
