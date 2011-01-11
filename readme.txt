@@ -29,10 +29,10 @@ So here is my plugin that solves your problem. This features of this plugin in i
 
 This section describes how to install the plugin and get it working.
 
-1. Create a new Page “New Post” and insert shorcode `[wpfu_addpost]`
-2. Create a new Page “Edit” for editing posts and insert shorcode `[wpfu_edit]`
-3. Create a new Page “Profile” for editing profile and insert shorcode `[wpfu_editprofile]`
-4. Create a new Page “Dashboard” and insert shorcode `[wpfu_dashboard]`
+1. Create a new Page “New Post” and insert shorcode `[wpuf_addpost]`
+2. Create a new Page “Edit” for editing posts and insert shorcode `[wpuf_edit]`
+3. Create a new Page “Profile” for editing profile and insert shorcode `[wpuf_editprofile]`
+4. Create a new Page “Dashboard” and insert shorcode `[wpuf_dashboard]`
 5. Correct the permalink structure of your wordpress installation
 6. Insert the “Edit” Page url to the admin options page of the plugin
 

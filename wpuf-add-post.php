@@ -1,11 +1,11 @@
 <?php
-function wpfu_add_post_shorcode() {
+function wpuf_add_post_shorcode() {
     wpuf_auth_redirect_login(); // if not logged in, redirect to login page
     nocache_headers();
     wpuf_add_post();
     add_action('wp_footer', 'wpuf_post_form_style');
 }
-add_shortcode('wpfu_addpost', 'wpfu_add_post_shorcode');
+add_shortcode('wpuf_addpost', 'wpuf_add_post_shorcode');
 
 
 function wpuf_add_post() {
@@ -51,7 +51,7 @@ function wpuf_add_post() {
         </li>
         <li>
             <label>&nbsp;</label>
-            <input class="wpfu_submit" type="submit" name="wpuf_new_post_submit" value="Post!">
+            <input class="wpuf_submit" type="submit" name="wpuf_new_post_submit" value="Post!">
         </li>
     </ul>
 </form>

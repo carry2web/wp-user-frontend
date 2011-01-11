@@ -1,11 +1,11 @@
 <?php
-function wpfu_edit_post_shorcode() {
+function wpuf_edit_post_shorcode() {
     wpuf_auth_redirect_login(); // if not logged in, redirect to login page
     nocache_headers();
     wpuf_edit_post();
     add_action('wp_footer', 'wpuf_post_form_style');
 }
-add_shortcode('wpuf_edit', 'wpfu_edit_post_shorcode');
+add_shortcode('wpuf_edit', 'wpuf_edit_post_shorcode');
 
 function wpuf_edit_post() {
     global $wpdb, $userdata;
@@ -84,7 +84,7 @@ function wpuf_edit_show_form($post) {
         </li>
         <li>
             <label>&nbsp;</label>
-            <input class="wpfu_submit" type="submit" name="wpuf_edit_post_submit" value="Update">
+            <input class="wpuf_submit" type="submit" name="wpuf_edit_post_submit" value="Update">
             <input type="hidden" name="post_id" value="<?php echo $post->ID; ?>">
         </li>
     </ul>
