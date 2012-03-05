@@ -1,17 +1,34 @@
 <?php
 
+/**
+ * Handles the edit post shortcode
+ *
+ * @return string generated form by the plugin
+ */
 function wpuf_edit_post_shorcode() {
+
+    ob_start();
+
     if ( is_user_logged_in() ) {
         wpuf_edit_post();
     } else {
         printf( __( "This page is restricted. Please %s to view this page.", 'wpuf' ), wp_loginout( '', false ) );
     }
 
-    add_action( 'wp_footer', 'wpuf_post_form_style' );
+    $content =  ob_get_contents();
+    ob_end_clean();
+
+    return $content;
 }
 
 add_shortcode( 'wpuf_edit', 'wpuf_edit_post_shorcode' );
 
+/**
+ * Main edit post form
+ *
+ * @global type $wpdb
+ * @global type $userdata
+ */
 function wpuf_edit_post() {
     global $wpdb, $userdata;
 
@@ -113,7 +130,7 @@ function wpuf_edit_show_form( $post ) {
                 </label>
                 <div style="float:left;">
                     <?php if ( get_option( 'wpuf_editor_type' ) == 'rich' ) { ?>
-                        <?php wp_editor( esc_html( $post->post_content ), 'new-post-desc', array('textarea_name' => 'wpuf_post_content', 'teeny' => true, 'textarea_rows' => 8) ); ?>
+                        <?php wp_editor( $post->post_content, 'new-post-desc', array('textarea_name' => 'wpuf_post_content', 'teeny' => true, 'textarea_rows' => 8) ); ?>
                     <?php } else { ?>
                         <textarea name="wpuf_post_content" id="new-post-desc" cols="60" rows="8"><?php echo esc_textarea( $post->post_content ); ?></textarea>
                     <?php } ?>
@@ -135,7 +152,7 @@ function wpuf_edit_show_form( $post ) {
             <?php } ?>
 
             <?php wpuf_attachment_fields(); ?>
-            <?php wpuf_edit_attachment( $post->ID ); ?>
+            
             <?php do_action( 'wpuf_add_post_form_tags', $post_type ); ?>
             <?php wpuf_build_custom_field_form( 'bottom', true, $post->ID ); ?>
 
@@ -147,6 +164,10 @@ function wpuf_edit_show_form( $post ) {
             </li>
         </ul>
     </form>
+    <div class="wpuf-edit-attachment">
+        <?php wpuf_edit_attachment( $post->ID ); ?>
+    </div>
+        
     <?php
 }
 
@@ -202,7 +223,7 @@ function wpuf_validate_post_edit_submit() {
         } //foreach
     } //is_array
 
-    do_action( 'wpuf_edit_post_validation' );
+    do_action( 'wpuf_edit_post_validation', intval( $_POST['post_id'] ) );
 
     if ( !$errors ) {
         $post_update = array(
@@ -212,6 +233,9 @@ function wpuf_validate_post_edit_submit() {
             'post_category' => array($cat),
             'tags_input' => $tags
         );
+
+        //plugin API to extend the functionality
+        $my_post = apply_filters( 'wpuf_edit_post_args', $my_post );
 
         $post_id = wp_update_post( $post_update );
 

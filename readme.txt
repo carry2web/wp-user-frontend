@@ -2,9 +2,9 @@
 Contributors: tareq1988
 Donate link: http://tareq.wedevs.com
 Tags: frontend, post, edit, dashboard, restrict
-Requires at least: 3.1
+Requires at least: 3.3
 Tested up to: 3.3
-Stable tag: 0.5
+Stable tag: 0.6
 
 Create, update, delete posts and edit profile from wordpress frontend.
 
@@ -46,9 +46,14 @@ This section describes how to install the plugin and get it working.
 
 == Screenshots ==
 1. Admin panel
-2. dashboard
-3. Edit Posts
-4. Edit Profile
+2. User Dashboard
+3. Add Post
+4. Edit Posts
+5. Edit Profile
+6. Custom Field Manager
+7. Subscription Pack Manager
+8. Subscription packs
+9. Edit Users
 
 == Frequently Asked Questions ==
 
@@ -70,8 +75,24 @@ Yes
 = I am having problem with uploading files =
 Please check if you've specified the max upload size on setting
 
+= Why "Edit Post" page shows "invalid post id"?=
+This page is for the purpose of editing posts. You shouldn't access this page directly.
+First you need to go to the dashboard, then when you click "edit", you'll be
+redirected to the edit page with that post id. Then you'll see the edit post form.
+
 
 == Changelog ==
+
+version 0.6
+---------------
+
+    * fixed error on attachment delete
+    * added styles on dashboard too
+    * fixed custom field default dropdown
+    * fixed output buffering for add_post/edit_post/dashboard/profile pages
+    * admin panel scripts are added wp_enqueue_script instead of echo
+    * fixed admin panel block logic
+    * filter hook added on edit post for post args
 
 version 0.5
 ---------------

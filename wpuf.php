@@ -5,7 +5,7 @@
   Plugin URI: http://tareq.wedevs.com/2011/01/new-plugin-wordpress-user-frontend/
   Description: Post, Edit, Delete posts and edit profile without coming to backend
   Author: Tareq Hasan
-  Version: 0.5
+  Version: 0.6
   Author URI: http://tareq.weDevs.com
  */
 
@@ -140,38 +140,30 @@ function wpuf_plugin_menu() {
 
     $plugin_page5 = add_submenu_page( 'wpuf-admin-opt', 'Transaction', 'Transaction', 'activate_plugins', 'wpuf_transaction', 'wpuf_transaction' );
 
-    add_action( 'admin_head-' . $plugin_page, 'wpuf_admin_header_style' );
-    add_action( 'admin_head-' . $plugin_page2, 'wpuf_admin_header_style' );
-    add_action( 'admin_head-' . $plugin_page3, 'wpuf_admin_header_style' );
-    add_action( 'admin_head-' . $plugin_page4, 'wpuf_admin_header_style' );
-
-    add_action( 'admin_head-' . $plugin_page, 'wpuf_admin_header_script' );
-    add_action( 'admin_head-' . $plugin_page2, 'wpuf_admin_header_script' );
-    add_action( 'admin_head-' . $plugin_page3, 'wpuf_admin_header_script' );
-    add_action( 'admin_head-' . $plugin_page4, 'wpuf_admin_header_script' );
+    add_action( 'admin_head-' . $plugin_page, 'wpuf_admin_script' );
+    add_action( 'admin_head-' . $plugin_page2, 'wpuf_admin_script' );
+    add_action( 'admin_head-' . $plugin_page3, 'wpuf_admin_script' );
+    add_action( 'admin_head-' . $plugin_page4, 'wpuf_admin_script' );
 }
 
 add_action( 'admin_menu', 'wpuf_plugin_menu' );
 
-function wpuf_admin_header_style() {
+function wpuf_admin_script() {
     $path = plugins_url( 'wp-user-frontend' );
 
-    echo "<link rel='stylesheet' href='$path/css/admin.css' type='text/css'/>";
-}
-
-function wpuf_admin_header_script() {
-    $path = plugins_url( 'wp-user-frontend' );
-
-    echo "<script src='$path/js/admin.js'></script>";
+    wp_enqueue_script('wpuf_admin', $path . '/js/admin.js');
+    wp_enqueue_style('wpuf_admin', $path . '/css/admin.css');
 }
 
 function wpuf_restrict_admin_access() {
+    global $pagenow;
 
     $wpuf_access_level = get_option( 'wpuf_admin_security' );
     if ( !isset( $wpuf_access_level ) || $wpuf_access_level == '' )
         $wpuf_access_level = 'read'; // if there's no value then give everyone access
 
-    if ( !current_user_can( $wpuf_access_level ) ) {
+    if ( !current_user_can( $wpuf_access_level ) && $pagenow != 'admin-ajax.php' &&
+            $pagenow != 'async-upload.php' && $pagenow != 'media-upload.php' ) {
         wp_die( "Access Denied. Your site administrator has blocked your access to the WordPress back-office." );
     }
 }
@@ -270,9 +262,9 @@ function wpuf_addpost_notice( $text ) {
         }
 
         $force_pack = get_option( 'wpuf_sub_force_pack' );
-        $user_pack = (isset( $user->wpuf_sub_pack )) ? intval( $user->wpuf_sub_pack ) : 0;
+        $post_count = (isset( $user->wpuf_sub_pcount )) ? intval( $user->wpuf_sub_pcount ) : 0;
 
-        if( $force_pack == 'yes' && $user_pack == 0 ) {
+        if( $force_pack == 'yes' && $post_count == 0 ) {
             return __( 'You must purchase a pack before posting', 'wpuf' );
         }
     }
@@ -299,9 +291,9 @@ function wpuf_can_post( $perm ) {
         }
 
         $force_pack = get_option( 'wpuf_sub_force_pack' );
-        $user_pack = (isset( $user->wpuf_sub_pack )) ? intval( $user->wpuf_sub_pack ) : 0;
+        $post_count = (isset( $user->wpuf_sub_pcount )) ? intval( $user->wpuf_sub_pcount ) : 0;
 
-        if( $force_pack == 'yes' && $user_pack == 0 ) {
+        if( $force_pack == 'yes' && $post_count == 0 ) {
             return 'no';
         }
     }
