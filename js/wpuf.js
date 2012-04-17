@@ -36,7 +36,7 @@ jQuery(document).ready(function($) {
 
         if( ! hasError ) {
             $(this).find('input[type=submit]').attr({
-                'value': 'Please wait, I am posting...',
+                'value': wpuf.postingMsg,
                 'disabled': true
             });
 
@@ -89,7 +89,7 @@ jQuery(document).ready(function() {
         wpuf_getChildrenCategories(jQuery(this),'catlvl-', 1, 'yes');
     }
     //bind the ajax lookup event to #cat object
-    jQuery('#cat').live('change', function(){
+    jQuery('#wpuf_new_post_form #cat').live('change', function(){
         currentLevel = parseInt(jQuery(this).parent().attr('level'));
         wpuf_getChildrenCategories(jQuery(this), 'catlvl', currentLevel+1, 'yes');
 
@@ -116,7 +116,7 @@ function wpuf_getChildrenCategories(dropdown, results_div_id, level, allow_paren
 
     jQuery.ajax({
         type: "post",
-        url: ajaxurl,
+        url: wpuf.ajaxurl,
         data: {
             action: 'wpuf_get_child_cats',
             //_ajax_nonce: '<?php //echo $nonce; ?>',
@@ -139,8 +139,8 @@ function wpuf_getChildrenCategories(dropdown, results_div_id, level, allow_paren
             else {
                 jQuery('#'+results_div).html(html).slideDown("fast"); //build html from ajax post
                 /* FANCY SELECT BOX ACTIVATOR - UNCOMMENT ONCE ITS READY
-				jQuery('#'+results_div+" #cat").selectBox({ menuTransition: 'fade', menuSpeed: 'fast' });
-				*/
+                jQuery('#'+results_div+" #cat").selectBox({ menuTransition: 'fade', menuSpeed: 'fast' });
+                */
                 jQuery('#'+results_div+" a").fadeIn(); //fade in the new dropdown (selectBox converts to <a>
                 whenEmpty = false;
             }

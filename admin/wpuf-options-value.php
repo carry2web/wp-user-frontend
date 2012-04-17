@@ -74,54 +74,56 @@ function wpuf_build_form( $options, $values = '', $from_option = true ) {
                         $element['label'] = stripslashes( $element['label'] );
                         $element['desc'] = stripslashes( $element['desc'] );
                         ?>
-                        <tr valign="top">
-                            <td scope="row" class="label">
+                        <li>
+                            <span class="label">
                                 <label for="<?php echo $element['name']; ?>"><?php echo $element['label']; ?></label>
 
                                 <?php if ( $element['desc'] ): ?>
                                     <span class="wpuf_help" title="<?php echo $element['desc']; ?>"></span>
                                 <?php endif; ?>
 
-                            </td>
-                            <td>
+                            </span>
+                            <span class="input-field">
                                 <input type="text" name="<?php echo $element['name']; ?>" value="<?php echo $value; ?>" id="<?php echo $element['name']; ?>" style="<?php echo $element['css']; ?>" size="<?php echo $element['size']; ?>">
-                            </td>
-                        </tr>
+                                <span class="description"><?php echo $element['desc']; ?></span>
+                            </span>
+                        </li>
 
                         <?php
                         break;
 
                     case 'textarea':
                         ?>
-                        <tr valign="top">
-                            <td scope="row" class="label">
+                        <li>
+                            <span class="label">
                                 <label for="<?php echo $element['name']; ?>"><?php echo $element['label']; ?></label>
 
                                 <?php if ( $element['desc'] ): ?>
                                     <span class="wpuf_help" title="<?php echo $element['desc']; ?>"></span>
                                 <?php endif; ?>
 
-                            </td>
-                            <td>
+                            </span>
+                            <span class="input-field">
                                 <textarea name="<?php echo $element['name']; ?>" id="<?php echo $element['name']; ?>" style="<?php echo $element['css']; ?>" rows="<?php echo $element['rows']; ?>" cols="<?php echo $element['cols']; ?>"><?php echo $value; ?></textarea>
-                            </td>
-                        </tr>
+                                <span class="description"><?php echo $element['desc']; ?></span>
+                            </span>
+                        </li>
 
                         <?php
                         break;
 
                     case 'select':
                         ?>
-                        <tr valign="top">
-                            <td scope="row" class="label">
+                        <li>
+                            <span class="label">
                                 <label for="<?php echo $element['name']; ?>"><?php echo $element['label']; ?></label>
 
                                 <?php if ( $element['desc'] ): ?>
                                     <span class="wpuf_help" title="<?php echo $element['desc']; ?>"></span>
                                 <?php endif; ?>
 
-                            </td>
-                            <td>
+                            </span>
+                            <span class="input-field">
 
                                 <?php
                                 //onchange event
@@ -140,9 +142,9 @@ function wpuf_build_form( $options, $values = '', $from_option = true ) {
                                             <?php endforeach; ?>
                                 </select>
 
-                                <span class="description"></span>
-                            </td>
-                        </tr>
+                                <span class="description"><?php echo $element['desc']; ?></span>
+                            </span>
+                        </li>
 
 
                         <?php
@@ -194,17 +196,30 @@ function wpuf_build_form( $options, $values = '', $from_option = true ) {
 
                     case 'title':
                         ?>
-                        <thead>
-                            <tr>
-                                <th colspan="2" class="dashboard-widget-title"><?php echo $element['label']; ?></th>
-                            </tr>
-                        </thead>
+                        <div id="<?php echo sanitize_title_with_dashes( $element['label'] ); ?>" class="group">
+                            <h3><?php echo $element['label']; ?></h3>
 
+                            <ul>
+                                <?php
+                                break;
+
+                            case 'title_end':
+                                ?>
+                            </ul>
+                        </div> <!-- title-end -->
                         <?php
                         break;
 
                     case 'h3':
                         echo '<h3>' . $element['label'] . '</h3>';
+                        break;
+
+                    case 'h4':
+                        echo '<h4>' . $element['label'] . '</h4>';
+                        break;
+
+                    case 'html':
+                        echo '<li>' . $element['label'] . '</li>';
                         break;
 
                     default:
@@ -474,6 +489,23 @@ function wpuf_build_form( $options, $values = '', $from_option = true ) {
             'default' => 'Submit Post!'
         ),
         array(
+            'name' => 'wpuf_post_update_label',
+            'label' => 'Post update button label',
+            'desc' => 'The text will be used for update button',
+            'type' => 'text',
+            'default' => 'Update Post!'
+        ),
+        array(
+            'name' => 'wpuf_post_submitting_label',
+            'label' => 'Post updating button label',
+            'desc' => 'The text will be used after clicking the submit button',
+            'type' => 'text',
+            'default' => 'Please wait...'
+        ),
+        array(
+            'type' => 'title_end'
+        ),
+        array(
             'type' => 'title',
             'label' => 'Frontend Posting Options'
         ),
@@ -527,66 +559,6 @@ function wpuf_build_form( $options, $values = '', $from_option = true ) {
             'desc' => 'If users are not allowed to choose category, select the default category that those posts will be posted.',
             'type' => 'select',
             'options' => wpuf_get_cats()
-        ),
-        array(
-            'name' => 'wpuf_notify',
-            'label' => 'New Post Notification',
-            'type' => 'select',
-            'desc' => 'A mail will be sent to admin if new post created',
-            'options' => array(
-                'yes' => 'Yes',
-                'no' => 'No'
-            )
-        ),
-        array(
-            'name' => 'wpuf_notify_poster',
-            'label' => 'Post Notification to poster',
-            'type' => 'select',
-            'desc' => 'A mail will be sent to the post creator when the post is published',
-            'options' => array(
-                'yes' => 'Yes',
-                'no' => 'No'
-            )
-        ),
-        array(
-            'name' => 'wpuf_can_edit_post',
-            'label' => 'User can edit post?',
-            'desc' => 'Users will be able to edit their posts.',
-            'type' => 'select',
-            'options' => array(
-                'yes' => 'Enable',
-                'no' => 'Disable'
-            )
-        ),
-        array(
-            'name' => 'wpuf_can_del_post',
-            'label' => 'User can delete post?',
-            'desc' => 'Users will be able to delete their own post',
-            'type' => 'select',
-            'options' => array(
-                'no' => 'Disable',
-                'yes' => 'Enable'
-            )
-        ),
-        array(
-            'name' => 'wpuf_edit_page_url',
-            'label' => 'Edit page',
-            'desc' => 'Select the page where [wpuf_edit] shortcode is located.',
-            'type' => 'select',
-            'options' => wpuf_dropdown_page()
-        ),
-        array(
-            'name' => 'wpuf_admin_security',
-            'label' => 'Admin area access',
-            'desc' => 'Allow you to block specific users from role to wordpress admin area. The setting <b>ADMINS ONLY</b> is recommended. If you want the behave as default wordpress, select <b>All Access</b>.',
-            'type' => 'select',
-            'options' => array(
-                'install_themes' => 'Admin Only',
-                'edit_others_posts' => 'Admins, Editors',
-                'publish_posts' => 'Admins, Editors, Authors',
-                'edit_posts' => 'Admins, Editors, Authors, Contributors',
-                'read' => 'All Access'
-            )
         ),
         array(
             'name' => 'wpuf_allow_attachments',
@@ -663,6 +635,9 @@ function wpuf_build_form( $options, $values = '', $from_option = true ) {
             )
         ),
         array(
+            'type' => 'title_end'
+        ),
+        array(
             'type' => 'title',
             'label' => 'Dashboard Options'
         ),
@@ -719,8 +694,101 @@ function wpuf_build_form( $options, $values = '', $from_option = true ) {
             'cols' => 40
         ),
         array(
+            'type' => 'title_end'
+        ),
+        array(
             'type' => 'title',
             'label' => 'Other Options'
+        ),
+        array(
+            'name' => 'wpuf_notify',
+            'label' => 'New Post Notification',
+            'type' => 'select',
+            'desc' => 'A mail will be sent to admin if new post created',
+            'options' => array(
+                'yes' => 'Yes',
+                'no' => 'No'
+            )
+        ),
+        array(
+            'name' => 'wpuf_notify_poster',
+            'label' => 'Post Notification to poster',
+            'type' => 'select',
+            'desc' => 'A mail will be sent to the post creator when the post is published',
+            'options' => array(
+                'yes' => 'Yes',
+                'no' => 'No'
+            )
+        ),
+        array(
+            'name' => 'wpuf_can_edit_post',
+            'label' => 'User can edit post?',
+            'desc' => 'Users will be able to edit their posts.',
+            'type' => 'select',
+            'options' => array(
+                'yes' => 'Enable',
+                'no' => 'Disable'
+            )
+        ),
+        array(
+            'name' => 'wpuf_can_del_post',
+            'label' => 'User can delete post?',
+            'desc' => 'Users will be able to delete their own post',
+            'type' => 'select',
+            'options' => array(
+                'no' => 'Disable',
+                'yes' => 'Enable'
+            )
+        ),
+        array(
+            'name' => 'wpuf_edit_page_url',
+            'label' => 'Edit page',
+            'desc' => 'Select the page where [wpuf_edit] shortcode is located.',
+            'type' => 'select',
+            'options' => wpuf_dropdown_page()
+        ),
+        array(
+            'name' => 'wpuf_admin_security',
+            'label' => 'Admin area access',
+            'desc' => 'Allow you to block specific users from role to wordpress admin area. The setting <b>ADMINS ONLY</b> is recommended. If you want the behave as default wordpress, select <b>All Access</b>.',
+            'type' => 'select',
+            'options' => array(
+                'install_themes' => 'Admin Only',
+                'edit_others_posts' => 'Admins, Editors',
+                'publish_posts' => 'Admins, Editors, Authors',
+                'edit_posts' => 'Admins, Editors, Authors, Contributors',
+                'read' => 'All Access'
+            )
+        ),
+        array(
+            'name' => 'wpuf_show_custom_front',
+            'label' => 'Show custom fields in the post',
+            'desc' => 'If you want to show the custom field data to the post, select <b>Yes</b>.',
+            'type' => 'select',
+            'options' => array(
+                'yes' => 'Yes',
+                'no' => 'No'
+            )
+        ),
+        array(
+            'name' => 'wpuf_show_attach_inpost',
+            'label' => 'Show attachments in the post',
+            'desc' => 'If you want to show the uploaded attachment in the post, select <b>Yes</b>.',
+            'type' => 'select',
+            'options' => array(
+                'yes' => 'Yes',
+                'no' => 'No'
+            )
+        ),
+        array(
+            'name' => 'wpuf_override_editlink',
+            'label' => 'Override the post edit link',
+            'desc' => 'Users see the edit link in post if s/he is capable to edit the post/page. Selecting <strong>Yes</strong> will override the default WordPress link',
+            'type' => 'select',
+            'options' => array(
+                'yes' => 'Yes',
+                'no' => 'No'
+            )
         ),
         array(
             'name' => 'wpuf_custom_css',
@@ -729,6 +797,9 @@ function wpuf_build_form( $options, $values = '', $from_option = true ) {
             'type' => 'textarea',
             'rows' => 8,
             'cols' => 40
+        ),
+        array(
+            'type' => 'title_end'
         ),
         array(
             'type' => 'title',
@@ -805,6 +876,46 @@ function wpuf_build_form( $options, $values = '', $from_option = true ) {
             'desc' => 'After payment, users will be redirected here.',
             'type' => 'select',
             'options' => wpuf_dropdown_page()
+        ),
+        array(
+            'type' => 'title_end'
+        ),
+        array(
+            'type' => 'title',
+            'label' => 'Support'
+        ),
+        array(
+            'type' => 'h4',
+            'label' => 'Facing any problem?'
+        ),
+        array(
+            'type' => 'html',
+            'label' => '
+              <ol>
+                <li>
+                    <strong>Check the FAQ and the documentation</strong>
+                    <p>First of all, check the <strong><a href="http://wordpress.org/extend/plugins/wp-user-frontend/faq/">FAQ</a></strong> before contacting! Most of the questions you might need answers to have already been asked and the answers are in the FAQ. Checking the FAQ is the easiest and quickest way to solve your problem.</p>
+                </li>
+                <li>
+                    <strong>Use the Support Forum</strong>
+                    <p>If you were unable to find the answer to your question on the FAQ page, you should check the <strong><a href="http://wordpress.org/tags/wp-user-frontend?forum_id=10">support forum on WordPress.org</a></strong>. If you can’t locate any topics that pertain to your particular issue, post a new topic for it.</p>
+                    <p>But, remember that this is a free support forum and no one is obligated to help you. Every person who offers information to help you is a volunteer, so be polite. And, I would suggest that you read the <a href="http://wordpress.org/support/topic/68664">“Forum Rules”</a> before posting anything on this page.</p>
+                </li>
+                <li>
+                    <strong>Got an idea?</strong>
+                    <p>I would love to hear about your ideas and suggestions about the plugin. Please post them on the <strong><a href="http://wordpress.org/tags/wp-user-frontend?forum_id=10">support forum on WordPress.org</a></strong> and I will look into it</p>
+                </li>
+                <li>
+                    <strong>Gettings no response?</strong>
+                    <p>I try to answer all the question in the forum. I created the plugin without any charge and I am usually very busy with my other works. As this is a free plugin, I am not bound answer all of your questions.</p>
+                </li>
+                <li>
+                    I spent countless hours to build this plugin, <strong>support</strong> me if you like this plugin and <a href="http://wordpress.org/extend/plugins/wp-user-frontend/">rate</a> the plugin.
+                </li>
+                </ol>'
+        ),
+        array(
+            'type' => 'title_end'
         ),
     );
 
