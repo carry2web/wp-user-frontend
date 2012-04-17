@@ -57,7 +57,8 @@ function wpuf_edit_post() {
             $curpost = get_post( $post_id, 'OBJECT' );
 
             if ( $curpost ) {
-                if ( intval( $userdata->ID ) != intval( $curpost->post_author ) ) {
+                //if ( !current_user_can( 'delete_others_posts' ) || ( intval( $userdata->ID ) != intval( $curpost->post_author ) ) ) {
+                if ( !current_user_can( 'delete_others_posts' ) && ( $userdata->ID != $curpost->post_author ) ) {
                     wp_redirect( site_url() );
                     exit;
                 }
@@ -91,7 +92,7 @@ function wpuf_edit_show_form( $post ) {
         <?php wp_nonce_field( 'wpuf-edit-post' ) ?>
         <ul class="wpuf-post-form">
 
-            <?php do_action( 'wpuf_add_post_form_top', $post_type ); //plugin hook  ?>
+            <?php do_action( 'wpuf_add_post_form_top', $post->post_type, $post ); //plugin hook  ?>
             <?php wpuf_build_custom_field_form( 'top', true, $post->ID ); ?>
 
             <li>
@@ -115,13 +116,13 @@ function wpuf_edit_show_form( $post ) {
                         $selected = $cats[0]->term_id;
                     }
                     ?>
-                    <?php wp_dropdown_categories( 'show_option_none=-- Select --&hierarchical=1&hide_empty=0&orderby=id&show_count=0&title_li=&use_desc_for_title=1&class=cat requiredField&exclude=' . $exclude . '&selected=' . $selected ); ?>
+                    <?php wp_dropdown_categories( 'show_option_none=' . __( '-- Select --', 'wpuf' ) . '&hierarchical=1&hide_empty=0&orderby=id&show_count=0&title_li=&use_desc_for_title=1&class=cat requiredField&exclude=' . $exclude . '&selected=' . $selected ); ?>
                     <div class="clear"></div>
                     <p class="description"><?php echo stripslashes( get_option( 'wpuf_cat_help' ) ); ?></p>
                 </li>
             <?php } ?>
 
-            <?php do_action( 'wpuf_add_post_form_description', $post_type ); ?>
+            <?php do_action( 'wpuf_add_post_form_description', $post->post_type, $post ); ?>
             <?php wpuf_build_custom_field_form( 'description', true, $post->ID ); ?>
 
             <li>
@@ -138,7 +139,7 @@ function wpuf_edit_show_form( $post ) {
                 <div class="clear"></div>
             </li>
 
-            <?php do_action( 'wpuf_add_post_form_after_description', $post_type ); ?>
+            <?php do_action( 'wpuf_add_post_form_after_description', $post->post_type, $post ); ?>
             <?php wpuf_build_custom_field_form( 'tag', true, $post->ID ); ?>
 
             <?php if ( get_option( 'wpuf_allow_tags' ) == 'yes' ) { ?>
@@ -151,24 +152,26 @@ function wpuf_edit_show_form( $post ) {
                 </li>
             <?php } ?>
 
-            <?php wpuf_attachment_fields(); ?>
-            
-            <?php do_action( 'wpuf_add_post_form_tags', $post_type ); ?>
+            <?php wpuf_attachment_fields( true, $post->ID ); ?>
+
+            <?php do_action( 'wpuf_add_post_form_tags', $post->post_type, $post ); ?>
             <?php wpuf_build_custom_field_form( 'bottom', true, $post->ID ); ?>
 
             <li>
                 <label>&nbsp;</label>
-                <input class="wpuf_submit" type="submit" name="wpuf_edit_post_submit" value="<?php _e( 'Update', 'wpuf' ); ?>">
+                <input class="wpuf_submit" type="submit" name="wpuf_edit_post_submit" value="<?php echo esc_attr( get_option('wpuf_post_update_label', 'Update Post!') ); ?>">
                 <input type="hidden" name="wpuf_edit_post_submit" value="yes" />
                 <input type="hidden" name="post_id" value="<?php echo $post->ID; ?>">
             </li>
         </ul>
     </form>
-    <div class="wpuf-edit-attachment">
-        <?php wpuf_edit_attachment( $post->ID ); ?>
-    </div>
-        
+
+    <?php if ( get_option( 'wpuf_allow_attachments' ) == 'yes' ) { ?>
+        <div class="wpuf-edit-attachment">
+            <?php wpuf_edit_attachment( $post->ID ); ?>
+        </div>
     <?php
+    }
 }
 
 function wpuf_validate_post_edit_submit() {
@@ -178,8 +181,16 @@ function wpuf_validate_post_edit_submit() {
 
     $title = trim( $_POST['wpuf_post_title'] );
     $content = trim( $_POST['wpuf_post_content'] );
-    $tags = wpuf_clean_tags( $_POST['wpuf_post_tags'] );
-    $cat = trim( $_POST['cat'] );
+
+    $tags = '';
+    $cat = '';
+    if( isset( $_POST['wpuf_post_tags'] ) ) {
+        $tags = wpuf_clean_tags( $_POST['wpuf_post_tags'] );
+    }
+
+    if( isset( $_POST['cat'] ) ) {
+        $cat = trim( $_POST['cat'] );
+    }
 
     //if there is some attachement, validate them
     if ( !empty( $_FILES['wpuf_post_attachments'] ) ) {
@@ -187,13 +198,13 @@ function wpuf_validate_post_edit_submit() {
     }
 
     if ( empty( $title ) ) {
-        $errors[] = "Empty post title";
+        $errors[] = __( 'Empty post title', 'wpuf' );
     } else {
         $title = trim( strip_tags( $title ) );
     }
 
     if ( empty( $content ) ) {
-        $errors[] = "Empty post content";
+        $errors[] = __( 'Empty post content', 'wpuf' );
     } else {
         $content = trim( $content );
     }
@@ -215,7 +226,7 @@ function wpuf_validate_post_edit_submit() {
                 //var_dump($temp, $cf);
 
                 if ( ( $cf['type'] == 'yes' ) && !$temp ) {
-                    $errors[] = __( "{$cf['label']} is missing", 'wpuf' );
+                    $errors[] = sprintf( __( '%s is missing', 'wpuf' ), $cf['label'] );
                 } else {
                     $custom_fields[$cf['field']] = $temp;
                 }
@@ -223,7 +234,7 @@ function wpuf_validate_post_edit_submit() {
         } //foreach
     } //is_array
 
-    do_action( 'wpuf_edit_post_validation', intval( $_POST['post_id'] ) );
+    $errors = apply_filters( 'wpuf_edit_post_validation', $errors );
 
     if ( !$errors ) {
         $post_update = array(
@@ -235,12 +246,12 @@ function wpuf_validate_post_edit_submit() {
         );
 
         //plugin API to extend the functionality
-        $my_post = apply_filters( 'wpuf_edit_post_args', $my_post );
+        $post_update = apply_filters( 'wpuf_edit_post_args', $post_update );
 
         $post_id = wp_update_post( $post_update );
 
         if ( $post_id ) {
-            echo '<div class="success">Post updated succesfully.</div>';
+            echo '<div class="success">' . __( 'Post updated succesfully.', 'wpuf' ) . '</div>';
 
             //upload attachment to the post
             wpuf_upload_attachment( $post_id );
