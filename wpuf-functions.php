@@ -1,6 +1,19 @@
 <?php
 
 /**
+ * Start output buffering
+ *
+ * This is needed for redirecting to post when a new post has made
+ *
+ * @since 0.8
+ */
+function wpuf_buffer_start() {
+    ob_start();
+}
+
+add_action( 'init', 'wpuf_buffer_start' );
+
+/**
  * If the user isn't logged in, redirect
  * to the login page
  *
@@ -15,39 +28,6 @@ function wpuf_auth_redirect_login() {
         wp_redirect( get_option( 'siteurl' ) . '/wp-login.php?redirect_to=' . urlencode( $_SERVER['REQUEST_URI'] ) );
         exit();
     }
-}
-
-/**
- * Load the translation file for current language.
- *
- * @since version 0.7
- * @author Tareq Hasan
- */
-function wpuf_plugin_init() {
-    $locale = apply_filters( 'wpuf_locale', get_locale() );
-    $mofile = dirname( __FILE__ ) . "/languages/wpuf-$locale.mo";
-
-    if ( file_exists( $mofile ) ) {
-        load_textdomain( 'wpuf', $mofile );
-    }
-}
-
-add_action( 'init', 'wpuf_plugin_init' );
-
-/**
- * Utility function for debugging
- *
- * @since version 0.1
- * @author Tareq Hasan
- */
-if ( !function_exists( 'd' ) ) {
-
-    function d( $param ) {
-        echo "<pre>";
-        print_r( $param );
-        echo "</pre>";
-    }
-
 }
 
 /**
@@ -78,32 +58,6 @@ function wpuf_show_post_status( $status ) {
 
     echo '<span style="color:' . $fontcolor . ';">' . $title . '</span>';
 }
-
-/**
- * Enqueues Styles and Scripts when the shortcodes are used only
- *
- * @uses has_shortcode()
- * @since 0.2
- */
-function wpuf_enqueue_scripts() {
-    $path = plugins_url( 'wp-user-frontend' );
-
-    if ( has_shortcode( 'wpuf_addpost' ) || has_shortcode( 'wpuf_edit' ) || has_shortcode( 'wpuf_dashboard' ) ) {
-        wp_enqueue_style( 'wpuf', $path . '/css/wpuf.css' );
-        wp_enqueue_style( 'wpuf-pagination', $path . '/css/pagination.css' );
-
-        wp_enqueue_script( 'jquery' );
-        wp_enqueue_script( 'wpuf', $path . '/js/wpuf.js' );
-
-        $posting_msg = get_option( 'wpuf_post_submitting_label', 'Please wait...' );
-        wp_localize_script( 'wpuf', 'wpuf', array(
-            'ajaxurl' => admin_url( 'admin-ajax.php' ),
-            'postingMsg' => $posting_msg
-        ) );
-    }
-}
-
-add_action( 'wp_enqueue_scripts', 'wpuf_enqueue_scripts' );
 
 /**
  * Format error message
@@ -159,8 +113,12 @@ function wpuf_notify_post_mail( $user, $post_id ) {
     $msg .= sprintf( __( 'Permalink : %s' ), $permalink ) . "\r\n";
     $msg .= sprintf( __( 'Edit Link : %s' ), admin_url( 'post.php?action=edit&post=' . $post_id ) ) . "\r\n";
 
+    //plugin api
+    $to = apply_filters( 'wpuf_notify_to', $to );
+    $subject = apply_filters( 'wpuf_notify_subject', $subject );
+    $msg = apply_filters( 'wpuf_notify_message', $msg );
+
     wp_mail( $to, $subject, $msg, $headers );
-    //var_dump($headers, $subject, $msg, $receiver);
 }
 
 /**
@@ -187,46 +145,63 @@ add_filter( 'upload_mimes', 'wpuf_mime' );
  * @param <type> $post_id
  */
 function wpuf_upload_attachment( $post_id ) {
-    include_once (ABSPATH . 'wp-admin/includes/file.php');
-    include_once (ABSPATH . 'wp-admin/includes/image.php');
+    if ( !isset( $_FILES['wpuf_post_attachments'] ) ) {
+        return false;
+    }
 
-    $override = array('test_form' => false);
+    $fields = (int) wpuf_get_option( 'attachment_num' );
 
-    $fields = (int) get_option( 'wpuf_attachment_num' );
     for ($i = 0; $i < $fields; $i++) {
         $file_name = basename( $_FILES['wpuf_post_attachments']['name'][$i] );
-        $file_type = wp_check_filetype( $file_name );
 
         if ( $file_name ) {
-            $upload = array(
-                'name' => $_FILES['wpuf_post_attachments']['name'][$i],
-                'type' => $_FILES['wpuf_post_attachments']['type'][$i],
-                'tmp_name' => $_FILES['wpuf_post_attachments']['tmp_name'][$i],
-                'error' => $_FILES['wpuf_post_attachments']['error'][$i],
-                'size' => $_FILES['wpuf_post_attachments']['size'][$i]
-            );
-
-            $uploaded_file = wp_handle_upload( $upload, $override );
-
-            // If the wp_handle_upload call returned a local path for the image
-            if ( isset( $uploaded_file['file'] ) ) {
-                $file_loc = $uploaded_file['file'];
-
-                $attachment = array(
-                    'post_mime_type' => $file_type['type'],
-                    'post_title' => preg_replace( '/\.[^.]+$/', '', basename( $file_name ) ),
-                    'post_content' => '',
-                    'post_status' => 'inherit'
+            if ( $file_name ) {
+                $upload = array(
+                    'name' => $_FILES['wpuf_post_attachments']['name'][$i],
+                    'type' => $_FILES['wpuf_post_attachments']['type'][$i],
+                    'tmp_name' => $_FILES['wpuf_post_attachments']['tmp_name'][$i],
+                    'error' => $_FILES['wpuf_post_attachments']['error'][$i],
+                    'size' => $_FILES['wpuf_post_attachments']['size'][$i]
                 );
 
-                $attach_id = wp_insert_attachment( $attachment, $file_loc, $post_id );
+                wpuf_upload_file( $upload );
+            }//file exists
+        }// end for
+    }
+}
 
-                $attach_data = wp_generate_attachment_metadata( $attach_id, $file_loc );
-                wp_update_attachment_metadata( $attach_id, $attach_data );
-                set_post_thumbnail( $post_id, $attach_id );
-            }//end file upload
-        }//file exists
-    }// end for
+/**
+ * Generic function to upload a file
+ *
+ * @since 0.8
+ * @param string $field_name file input field name
+ * @return bool|int attachment id on success, bool false instead
+ */
+function wpuf_upload_file( $upload_data ) {
+
+    $uploaded_file = wp_handle_upload( $upload_data, array('test_form' => false) );
+
+    // If the wp_handle_upload call returned a local path for the image
+    if ( isset( $uploaded_file['file'] ) ) {
+        $file_loc = $uploaded_file['file'];
+        $file_name = basename( $upload_data['name'] );
+        $file_type = wp_check_filetype( $file_name );
+
+        $attachment = array(
+            'post_mime_type' => $file_type['type'],
+            'post_title' => preg_replace( '/\.[^.]+$/', '', basename( $file_name ) ),
+            'post_content' => '',
+            'post_status' => 'inherit'
+        );
+
+        $attach_id = wp_insert_attachment( $attachment, $file_loc );
+        $attach_data = wp_generate_attachment_metadata( $attach_id, $file_loc );
+        wp_update_attachment_metadata( $attach_id, $attach_data );
+
+        return $attach_id;
+    }
+
+    return false;
 }
 
 /**
@@ -238,8 +213,8 @@ function wpuf_check_upload() {
     $errors = array();
     $mime = get_allowed_mime_types();
 
-    $size_limit = (int) (get_option( 'wpuf_attachment_max_size' ) * 1024);
-    $fields = (int) get_option( 'wpuf_attachment_num' );
+    $size_limit = (int) (wpuf_get_option( 'attachment_max_size' ) * 1024);
+    $fields = (int) wpuf_get_option( 'attachment_num' );
 
     for ($i = 0; $i < $fields; $i++) {
         $tmp_name = basename( $_FILES['wpuf_post_attachments']['tmp_name'][$i] );
@@ -280,7 +255,7 @@ function wpfu_get_attachments( $post_id ) {
         'post_status' => null,
         'post_parent' => $post_id,
         'order' => 'ASC',
-        'orderby' => 'ID'
+        'orderby' => 'menu_order'
     );
 
     $attachments = get_posts( $args );
@@ -298,33 +273,10 @@ function wpfu_get_attachments( $post_id ) {
 }
 
 /**
- * Prints the attachment files to the post content
+ * Attachments preview on edit page
  *
- * @global <type> $post
- * @param string $content original post content
- * @return string modified post content
+ * @param int $post_id
  */
-function wpuf_add_attachment_to_post( $content ) {
-    global $post;
-
-    $attach = wpfu_get_attachments( $post->ID );
-    //var_dump( $attach );
-
-    if ( $attach ) {
-        $count = 1;
-        foreach ($attach as $a) {
-            $text .= 'Attachment ' . $count . ': <a href="' . $a['url'] . '">' . $a['title'] . '</a><br>';
-            $count++;
-        }
-        return $content . $text;
-    }
-
-    return $content;
-}
-
-//add_filter('the_content', 'wpuf_add_attachment_to_post');
-
-
 function wpuf_edit_attachment( $post_id ) {
     $attach = wpfu_get_attachments( $post_id );
 
@@ -346,8 +298,8 @@ function wpuf_edit_attachment( $post_id ) {
 }
 
 function wpuf_attachment_fields( $edit = false, $post_id = false ) {
-    if ( get_option( 'wpuf_allow_attachments' ) == 'yes' ) {
-        $fields = (int) get_option( 'wpuf_attachment_num' );
+    if ( wpuf_get_option( 'allow_attachment' ) == 'yes' ) {
+        $fields = (int) wpuf_get_option( 'attachment_num' );
 
         if ( $edit && $post_id ) {
             $fields = abs( $fields - count( wpfu_get_attachments( $post_id ) ) );
@@ -370,19 +322,6 @@ function wpuf_attachment_fields( $edit = false, $post_id = false ) {
 }
 
 /**
- * Let the subscribers to upload files from the admin
- *
- * @package WP User Frontend
- * @author Tareq Hasan
- */
-function wpuf_let_upload() {
-    if ( !current_user_can( 'edit_posts' ) ) {
-        $subs = get_role( 'subscriber' );
-        //$subs->add_cap( 'upload_files' );
-    }
-}
-
-/**
  * Remove the mdedia upload tabs from subscribers
  *
  * @package WP User Frontend
@@ -399,17 +338,6 @@ function wpuf_unset_media_tab( $list ) {
 
 add_filter( 'media_upload_tabs', 'wpuf_unset_media_tab' );
 
-//add_action( 'init', 'wpuf_let_upload' );
-
-function wpuf_performance() {
-
-    $stat = sprintf( '%d queries in %.3f seconds, using %.2fMB memory', get_num_queries(), timer_stop( 0, 3 ), memory_get_peak_usage() / 1024 / 1024 );
-
-    echo $stat;
-}
-
-//add_action( 'wp_footer', 'wpuf_performance');
-
 /**
  * Get the registered post types
  *
@@ -421,16 +349,6 @@ function wpuf_get_post_types() {
     foreach ($post_types as $key => $val) {
         if ( $val == 'attachment' || $val == 'revision' || $val == 'nav_menu_item' ) {
             unset( $post_types[$key] );
-        }
-    }
-
-    //insert the custom post types
-    $cus_post_type = get_option( 'wpuf_post_types' );
-    if ( $cus_post_type ) {
-        $cus_post_type = explode( ',', $cus_post_type );
-
-        foreach ($cus_post_type as $cus_type) {
-            $post_types[$cus_type] = $cus_type;
         }
     }
 
@@ -520,35 +438,53 @@ function has_shortcode( $shortcode = '', $post_id = false ) {
     if ( !$shortcode ) {
         return $found;
     }
+
     // check the post content for the short code
     if ( stripos( $post_to_check->post_content, '[' . $shortcode ) !== false ) {
         // we have found the short code
         $found = true;
     }
 
-    // return our final results
     return $found;
 }
 
 /**
  * Retrieve or display list of posts as a dropdown (select list).
  *
- * @param array|string $args Optional. Override default arguments.
  * @return string HTML content, if not displaying.
  */
-function wpuf_dropdown_page( $args = '' ) {
+function wpuf_get_pages() {
     global $wpdb;
 
     $array = array();
     $pages = get_pages();
     if ( $pages ) {
         foreach ($pages as $page) {
-            //var_dump( $page );
             $array[$page->ID] = $page->post_title;
         }
     }
 
     return $array;
+}
+
+/**
+ * Get all the payment gateways
+ *
+ * @return array
+ */
+function wpuf_get_gateways( $context = 'admin' ) {
+    $gateways = WPUF_Payment::get_payment_gateways();
+    $return = array();
+
+    foreach ($gateways as $id => $gate) {
+        if($context == 'admin') {
+            $return[$id] = $gate['admin_label'];
+        } else {
+            $return[$id] = $gate['checkout_label'];
+        }
+    }
+
+    return $return;
 }
 
 /**
@@ -564,11 +500,11 @@ function wpuf_edit_post_link( $url, $post_id ) {
         return $url;
     }
 
-    $override = get_option( 'wpuf_override_editlink', 'yes' );
+    $override = wpuf_get_option( 'override_editlink', 'yes' );
     if ( $override == 'yes' ) {
         $url = '';
-        if ( get_option( 'wpuf_can_edit_post' ) == 'yes' ) {
-            $edit_page = (int) get_option( 'wpuf_edit_page_url' );
+        if ( wpuf_get_option( 'enable_post_edit' ) == 'yes' ) {
+            $edit_page = (int) wpuf_get_option( 'edit_page_id' );
             $url = get_permalink( $edit_page );
 
             $url = wp_nonce_url( $url . '?pid=' . $post_id, 'wpuf_edit' );
@@ -594,11 +530,11 @@ function wpuf_show_meta_front( $content ) {
     global $wpdb, $post;
 
     //check, if custom field is enabled
-    $enabled = get_option( 'wpuf_enable_custom_field', 'no' );
-    $show_custom = get_option( 'wpuf_show_custom_front', 'no' );
-    $show_attachment = get_option( 'wpuf_show_attach_inpost', 'no' );
+    $enabled = wpuf_get_option( 'enable_custom_field' );
+    $show_custom = wpuf_get_option( 'cf_show_front' );
+    $show_attachment = wpuf_get_option( 'att_show_front' );
 
-    if ( $enabled == 'yes' && $show_custom == 'yes' ) {
+    if ( $enabled == 'on' && $show_custom == 'on' ) {
         $extra = '';
         $fields = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}wpuf_customfields ORDER BY `region` DESC", OBJECT );
         if ( $wpdb->num_rows > 0 ) {
@@ -606,7 +542,7 @@ function wpuf_show_meta_front( $content ) {
             foreach ($fields as $field) {
                 $meta = get_post_meta( $post->ID, $field->field, true );
                 if ( $meta ) {
-                    $extra .= sprintf( '<li><label>%s</label> : %s</li>', $field->label, make_clickable($meta ) );
+                    $extra .= sprintf( '<li><label>%s</label> : %s</li>', $field->label, make_clickable( $meta ) );
                 }
             }
             $extra .= '<ul>';
@@ -615,7 +551,7 @@ function wpuf_show_meta_front( $content ) {
         }
     }
 
-    if ( $show_attachment == 'yes' ) {
+    if ( $show_attachment == 'on' ) {
         $attach = '';
         $attachments = wpfu_get_attachments( $post->ID );
 
@@ -665,4 +601,227 @@ function wpuf_is_file_image( $file, $mime ) {
     }
 
     return false;
+}
+
+/**
+ * Displays attachment information upon upload as featured image
+ *
+ * @since 0.8
+ * @param int $attach_id attachment id
+ * @return string
+ */
+function wpuf_feat_img_html( $attach_id ) {
+    $image = wp_get_attachment_image_src( $attach_id, 'thumbnail' );
+    $post = get_post( $attach_id );
+
+    $html = sprintf( '<div class="wpuf-item" id="attachment-%d">', $attach_id );
+    $html .= sprintf( '<img src="%s" alt="%s" />', $image[0], esc_attr( $post->post_title ) );
+    $html .= sprintf( '<a class="wpuf-del-ft-image button" href="#" data-id="%d">%s</a> ', $attach_id, __( 'Remove Image', 'wpuf' ) );
+    $html .= sprintf( '<input type="hidden" name="wpuf_featured_img" value="%d" />', $attach_id );
+    $html .= '</div>';
+
+    return $html;
+}
+
+/**
+ * Category checklist walker
+ *
+ * @since 0.8
+ */
+class WPUF_Walker_Category_Checklist extends Walker {
+
+    var $tree_type = 'category';
+    var $db_fields = array('parent' => 'parent', 'id' => 'term_id'); //TODO: decouple this
+
+    function start_lvl( &$output, $depth, $args ) {
+        $indent = str_repeat( "\t", $depth );
+        $output .= "$indent<ul class='children'>\n";
+    }
+
+    function end_lvl( &$output, $depth, $args ) {
+        $indent = str_repeat( "\t", $depth );
+        $output .= "$indent</ul>\n";
+    }
+
+    function start_el( &$output, $category, $depth, $args ) {
+        extract( $args );
+        if ( empty( $taxonomy ) )
+            $taxonomy = 'category';
+
+        if ( $taxonomy == 'category' )
+            $name = 'category';
+        else
+            $name = 'tax_input[' . $taxonomy . ']';
+
+        $class = in_array( $category->term_id, $popular_cats ) ? ' class="popular-category"' : '';
+        $output .= "\n<li id='{$taxonomy}-{$category->term_id}'$class>" . '<label class="selectit"><input value="' . $category->term_id . '" type="checkbox" name="' . $name . '[]" id="in-' . $taxonomy . '-' . $category->term_id . '"' . checked( in_array( $category->term_id, $selected_cats ), true, false ) . disabled( empty( $args['disabled'] ), false, false ) . ' /> ' . esc_html( apply_filters( 'the_category', $category->name ) ) . '</label>';
+    }
+
+    function end_el( &$output, $category, $depth, $args ) {
+        $output .= "</li>\n";
+    }
+
+}
+
+/**
+ * Displays checklist of a taxonomy
+ *
+ * @since 0.8
+ * @param int $post_id
+ * @param array $selected_cats
+ */
+function wpuf_category_checklist( $post_id = 0, $selected_cats = false, $tax = 'category' ) {
+    require_once ABSPATH . '/wp-admin/includes/template.php';
+
+    $walker = new WPUF_Walker_Category_Checklist();
+
+    echo '<ul class="wpuf-category-checklist">';
+    wp_terms_checklist( $post_id, array(
+        'taxonomy' => $tax,
+        'descendants_and_self' => 0,
+        'selected_cats' => $selected_cats,
+        'popular_cats' => false,
+        'walker' => $walker,
+        'checked_ontop' => false
+    ) );
+    echo '</ul>';
+}
+
+// display msg if permalinks aren't setup correctly
+function wpuf_permalink_nag() {
+
+    if ( current_user_can( 'manage_options' ) )
+        $msg = sprintf( __( 'You need to set your <a href="%1$s">permalink custom structure</a> to at least contain <b>/&#37;postname&#37;/</b> before WP User Frontend will work properly.', 'wpuf' ), 'options-permalink.php' );
+
+    echo "<div class='error fade'><p>$msg</p></div>";
+}
+
+//if not found %postname%, shows a error msg at admin panel
+if ( !stristr( get_option( 'permalink_structure' ), '%postname%' ) ) {
+    add_action( 'admin_notices', 'wpuf_permalink_nag', 3 );
+}
+
+function wpuf_option_values() {
+    global $custom_fields;
+
+    wpuf_value_travarse( $custom_fields );
+}
+
+function wpuf_value_travarse( $param ) {
+    foreach ($param as $key => $value) {
+        if ( $value['name'] ) {
+            echo '"' . $value['name'] . '" => "' . get_option( $value['name'] ) . '"<br>';
+        }
+    }
+}
+
+//wpuf_option_values();
+
+function wpuf_get_custom_fields() {
+    global $wpdb;
+
+    $data = array();
+
+    $fields = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}wpuf_customfields", OBJECT );
+    if ( $wpdb->num_rows > 0 ) {
+        foreach ($fields as $f) {
+            $data[] = array(
+                'label' => $f->label,
+                'field' => $f->field,
+                'type' => $f->required
+            );
+        }
+
+        return $data;
+    }
+
+    return false;
+}
+
+/**
+ * Adds notices on add post form if any
+ *
+ * @param string $text
+ * @return string
+ */
+function wpuf_addpost_notice( $text ) {
+    $user = wp_get_current_user();
+
+    if ( is_user_logged_in() ) {
+        $lock = ( $user->wpuf_postlock == 'yes' ) ? 'yes' : 'no';
+
+        if ( $lock == 'yes' ) {
+            return $user->wpuf_lock_cause;
+        }
+
+        $force_pack = wpuf_get_option( 'force_pack' );
+        $post_count = (isset( $user->wpuf_sub_pcount )) ? intval( $user->wpuf_sub_pcount ) : 0;
+
+        if ( $force_pack == 'yes' && $post_count == 0 ) {
+            return __( 'You must purchase a pack before posting', 'wpuf' );
+        }
+    }
+
+    return $text;
+}
+
+add_filter( 'wpuf_addpost_notice', 'wpuf_addpost_notice' );
+
+/**
+ * Adds the filter to the add post form if the user can post or not
+ *
+ * @param string $perm permission type. "yes" or "no"
+ * @return string permission type. "yes" or "no"
+ */
+function wpuf_can_post( $perm ) {
+    $user = wp_get_current_user();
+
+    if ( is_user_logged_in() ) {
+        $lock = ( $user->wpuf_postlock == 'yes' ) ? 'yes' : 'no';
+
+        if ( $lock == 'yes' ) {
+            return 'no';
+        }
+
+        $force_pack = wpuf_get_option( 'force_pack' );
+        $post_count = (isset( $user->wpuf_sub_pcount )) ? intval( $user->wpuf_sub_pcount ) : 0;
+
+        if ( $force_pack == 'yes' && $post_count == 0 ) {
+            return 'no';
+        }
+    }
+
+    return $perm;
+}
+
+add_filter( 'wpuf_can_post', 'wpuf_can_post' );
+
+function wpuf_header_css() {
+    $css = wpuf_get_option( 'custom_css' );
+    ?>
+    <style type="text/css">
+        ul.wpuf-attachments{ list-style: none; overflow: hidden;}
+        ul.wpuf-attachments li {float: left; margin: 0 10px 10px 0;}
+        <?php echo $css; ?>
+    </style>
+    <?php
+}
+
+add_action( 'wp_head', 'wpuf_header_css' );
+
+/**
+ * Get all the image sizes
+ *
+ * @return array image sizes
+ */
+function wpuf_get_image_sizes() {
+    $image_sizes_orig = get_intermediate_image_sizes();
+    $image_sizes_orig[] = 'full';
+    $image_sizes = array();
+
+    foreach ($image_sizes_orig as $size) {
+        $image_sizes[$size] = $size;
+    }
+
+    return $image_sizes;
 }
