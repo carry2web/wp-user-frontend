@@ -316,16 +316,6 @@ class WPUF_Add_Post {
         }
 
         //validate cat
-<<<<<<< HEAD
-        $cat_type = wpuf_get_option( 'cat_type' );
-        if ( !isset( $_POST['category'] ) ) {
-            $errors[] = __( 'Please choose a category', 'wpuf' );
-        } else if ( $cat_type == 'normal' && $_POST['category'][0] == '-1' ) {
-            $errors[] = __( 'Please choose a category', 'wpuf' );
-        } else {
-            if ( count( $_POST['category'] ) < 1 ) {
-                $errors[] = __( 'Please choose a category', 'wpuf' );
-=======
         if ( wpuf_get_option( 'allow_cats' ) == 'on' ) {
             $cat_type = wpuf_get_option( 'cat_type' );
             if ( !isset( $_POST['category'] ) ) {
@@ -336,7 +326,6 @@ class WPUF_Add_Post {
                 if ( count( $_POST['category'] ) < 1 ) {
                     $errors[] = __( 'Please choose a category', 'wpuf' );
                 }
->>>>>>> master
             }
         }
 
@@ -424,11 +413,7 @@ class WPUF_Add_Post {
             'tags_input' => $tags
         );
 
-<<<<<<< HEAD
-        if ( $post_expiry == 'yes' ) {
-=======
         if ( $post_date_enable == 'on' ) {
->>>>>>> master
             $month = $_POST['mm'];
             $day = $_POST['jj'];
             $year = $_POST['aa'];
@@ -469,11 +454,7 @@ class WPUF_Add_Post {
             }
 
             //Set Post expiration date if has any
-<<<<<<< HEAD
-            if ( !empty( $_POST['expiration-date'] ) ) {
-=======
             if ( !empty( $_POST['expiration-date'] ) && $post_expiry == 'on' ) {
->>>>>>> master
                 $post = get_post( $post_id );
                 $post_date = strtotime( $post->post_date );
                 $expiration = (int) $_POST['expiration-date'];
