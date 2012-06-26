@@ -3,13 +3,8 @@ Contributors: tareq1988
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=tareq%40wedevs%2ecom&lc=US&item_name=WP%20User%20Frontend&item_number=Tareq%27s%20Planet&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted
 Tags: frontend, post, edit, dashboard, restrict
 Requires at least: 3.3
-<<<<<<< HEAD
-Tested up to: 3.3.1
-Stable tag: 1.0
-=======
 Tested up to: 3.4
 Stable tag: 1.1
->>>>>>> master
 
 Create, update, delete posts and edit profile from wordpress frontend.
 
@@ -91,8 +86,6 @@ redirected to the edit page with that post id. Then you'll see the edit post for
 
 == Changelog ==
 
-<<<<<<< HEAD
-=======
 = version 1.1 =
 
 * warning for multisite fix
@@ -102,7 +95,6 @@ redirected to the edit page with that post id. Then you'll see the edit post for
 * post date bug fix
 * category dropdown fix
 
->>>>>>> master
 = version 1.0 =
 
 * Admin panel converted to settings API
