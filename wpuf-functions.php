@@ -356,7 +356,11 @@ function wpuf_get_post_types() {
 }
 
 function wpuf_get_cats() {
+<<<<<<< HEAD
     $cats = get_categories();
+=======
+    $cats = get_categories( array('hide_empty' => false) );
+>>>>>>> master
 
     $list = array();
 
@@ -477,7 +481,11 @@ function wpuf_get_gateways( $context = 'admin' ) {
     $return = array();
 
     foreach ($gateways as $id => $gate) {
+<<<<<<< HEAD
         if($context == 'admin') {
+=======
+        if ( $context == 'admin' ) {
+>>>>>>> master
             $return[$id] = $gate['admin_label'];
         } else {
             $return[$id] = $gate['checkout_label'];

@@ -182,7 +182,11 @@ jQuery(document).ready(function($) {
 
             $.ajax({
                 type: 'post',
+<<<<<<< HEAD
                 url: ajaxurl,
+=======
+                url: wpuf.ajaxurl,
+>>>>>>> master
                 data: {
                     action: 'wpuf_get_child_cats',
                     catID: cat,
@@ -212,4 +216,8 @@ jQuery(document).ready(function($) {
     //run the bootstrap
     WPUF_Obj.init();
 
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> master

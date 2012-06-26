@@ -118,6 +118,13 @@ class WPUF_Main {
     function enqueue_scripts() {
         $path = plugins_url( 'wp-user-frontend' );
 
+<<<<<<< HEAD
+=======
+        //for multisite upload limit filter
+        if ( is_multisite() ) {
+            require_once ABSPATH . '/wp-admin/includes/ms.php';
+        }
+>>>>>>> master
 
         require_once ABSPATH . '/wp-admin/includes/template.php';
 

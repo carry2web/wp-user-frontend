@@ -12,8 +12,6 @@ function wpuf_custom_fields() {
             wpuf_custom_fields_main();
             break;
     }
-<<<<<<< HEAD
-=======
     ?>
     <script type="text/javascript">
         function wpuf_show(el){
@@ -34,7 +32,6 @@ function wpuf_custom_fields() {
         });
     </script>
     <?php
->>>>>>> master
 }
 
 function wpuf_custom_fields_main() {

@@ -12,29 +12,6 @@ function wpuf_custom_fields() {
             wpuf_custom_fields_main();
             break;
     }
-<<<<<<< HEAD
-=======
-    ?>
-    <script type="text/javascript">
-        function wpuf_show(el){
-
-            var d = jQuery('#wpuf_field_values_row');
-            if(jQuery(el).val() == 'select') {
-                d.show();
-            } else {
-                d.hide();
-            }
-        }
-
-        //tooltip function
-        jQuery(document).ready(function($) {
-
-            $('.wpuf-admin #type').change();
-
-        });
-    </script>
-    <?php
->>>>>>> master
 }
 
 function wpuf_custom_fields_main() {
