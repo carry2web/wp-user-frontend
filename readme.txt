@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=tareq
 Tags: frontend, post, edit, dashboard, restrict
 Requires at least: 3.3
 Tested up to: 3.4
-Stable tag: 1.1
+Stable tag: trunk
 
 Create, update, delete posts and edit profile from wordpress frontend.
 
@@ -30,6 +30,34 @@ So here is my plugin that solves your problem. This features of this plugin are 
 * Admins can manage their users from frontend
 * Pay per post or subscription on posting is possible
 
+= WP User Frontend PRO =
+
+The <a href="http://wedevs.com/plugin/wp-user-frontend-pro">premium version</a> of WP User Frontend comes with tons of features:
+
+* Unlimited post type form creation
+* Drag-n-drop form builder
+* Custom taxonomy support
+* 13 variations of custom fields
+* Guest post support
+* Custom Redirection
+* Image upload on post content area
+* Post status selection on new post and edited post separately
+* New or edit post notification
+* Custom fields are generated also in admin area
+* <strong>Profile form builder</strong>
+* Different profile edit forms for different user roles
+* Drag-n-Drop profile form builder
+* Profile fields are generated on backend too
+* Avatar Upload
+* Frontend profile edit
+* <strong>Registration form</strong> builder
+* Captcha Support
+* Theme My Login compatible
+* Much more...
+
+<a href="http://wedevs.com/plugin/wp-user-frontend-pro">Try out the awesome Pro version</a> of bunch of features
+
+
 
 == Installation ==
 
@@ -45,6 +73,7 @@ This section describes how to install the plugin and get it working.
 1. To show the subscription info, insert the shortcdoe `[wpuf_sub_info]`
 1. To show the subscription packs, insert the shortcode `[wpuf_sub_pack]`
 1. For subscription payment page, set the *Payment Page* from *Payments* tab on settings page.
+1. To edit users, insert the shortcode `[wpuf-edit-users]`
 
 
 == Screenshots ==
@@ -85,6 +114,14 @@ redirected to the edit page with that post id. Then you'll see the edit post for
 
 
 == Changelog ==
+
+= version 1.2 =
+
+* [fix] Subscription post publish
+* [fix] Post delete fix in dashboard
+* [fix] Silverlight in IE upload error
+* [fix] Category checklist bug fix
+* [new] Checkbox field in custom field
 
 = version 1.1 =
 

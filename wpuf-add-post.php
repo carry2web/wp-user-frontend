@@ -116,7 +116,7 @@ class WPUF_Add_Post {
                                         } else if ( $cat_type == 'ajax' ) {
                                             wp_dropdown_categories( 'show_option_none=' . __( '-- Select --', 'wpuf' ) . '&hierarchical=1&hide_empty=0&orderby=name&name=category[]&id=cat-ajax&show_count=0&title_li=&use_desc_for_title=1&class=cat requiredField&depth=1&exclude=' . $exclude );
                                         } else {
-                                            wpuf_category_checklist();
+                                            wpuf_category_checklist(0, false, 'category', $exclude);
                                         }
                                         ?>
                                     </div>
@@ -294,7 +294,9 @@ class WPUF_Add_Post {
         global $userdata;
 
         $errors = array();
-
+        
+        var_dump( $_POST );
+        
         //if there is some attachement, validate them
         if ( !empty( $_FILES['wpuf_post_attachments'] ) ) {
             $errors = wpuf_check_upload();
@@ -356,18 +358,23 @@ class WPUF_Add_Post {
             foreach ($fields as $cf) {
                 if ( array_key_exists( $cf['field'], $_POST ) ) {
 
-                    $temp = trim( strip_tags( $_POST[$cf['field']] ) );
+                    if ( is_array( $_POST[$cf['field']] ) ) {
+                        $temp = implode(',', $_POST[$cf['field']]);
+                    } else {
+                        $temp = trim( strip_tags( $_POST[$cf['field']] ) );
+                    }
+                    
                     //var_dump($temp, $cf);
 
                     if ( ( $cf['type'] == 'yes' ) && !$temp ) {
-                        $errors[] = sprintf( __( '%s is missing', 'wpuf' ), $cf['label'] );
+                        $errors[] = sprintf( __( '"%s" is missing', 'wpuf' ), $cf['label'] );
                     } else {
                         $custom_fields[$cf['field']] = $temp;
                     }
                 } //array_key_exists
             } //foreach
         } //is_array
-
+        
         $post_date_enable = wpuf_get_option( 'enable_post_date' );
         $post_expiry = wpuf_get_option( 'enable_post_expiry' );
 

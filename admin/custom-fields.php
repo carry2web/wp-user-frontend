@@ -16,8 +16,10 @@ function wpuf_custom_fields() {
     <script type="text/javascript">
         function wpuf_show(el){
 
-            var d = jQuery('#wpuf_field_values_row');
-            if(jQuery(el).val() == 'select') {
+            var d = jQuery('#wpuf_field_values_row'),
+                val = jQuery(el).val();
+                
+            if(val === 'select' || val === 'checkbox') {
                 d.show();
             } else {
                 d.hide();
@@ -152,6 +154,7 @@ function wpuf_custom_fields_main() {
                                 <option value="text"><?php _e( 'Text Box', 'wpuf' ); ?></option>
                                 <option value="textarea"><?php _e( 'Text Area', 'wpuf' ); ?></option>
                                 <option value="select"><?php _e( 'Dropdown', 'wpuf' ); ?></option>
+                                <option value="checkbox"><?php _e( 'Checkbox', 'wpuf' ); ?></option>
                             </select>
                             <span class="description"></span>
                         </td>
@@ -196,7 +199,7 @@ function wpuf_custom_fields_main() {
             $fields = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}wpuf_customfields ORDER BY `region` DESC", OBJECT );
             if ( $wpdb->num_rows > 0 ):
 
-                $type = array('text' => 'Text Box', 'textarea' => 'Text Area', 'select' => 'Dropdown');
+                $type = array('text' => 'Text Box', 'textarea' => 'Text Area', 'select' => 'Dropdown', 'checkbox' => 'Checkbox');
                 $position = array('top' => 'Top', 'description' => 'Before Description', 'tag' => 'After Description', 'bottom' => 'Bottom');
 
                 $count = 0;
@@ -213,8 +216,8 @@ function wpuf_custom_fields_main() {
                         <td><?php echo $position[$row->region]; ?></td>
                         <td><?php echo $row->order; ?></td>
                         <td>
-                            <a href="admin.php?page=wpuf_custom_fields&action=edit&id=<?php echo $row->id; ?>"><img src="<?php echo plugins_url( 'wp-user-frontend/images/edit.png' ); ?>"</a>
-                            <a href="<?php echo wp_nonce_url( "admin.php?page=wpuf_custom_fields&action=del&id=" . $row->id, 'wpuf_del' ) ?>" onclick="return confirm('Are you sure to delete this field?');"><img src="<?php echo plugins_url( 'wp-user-frontend/images/del.png' ); ?>"</a>
+                            <a href="admin.php?page=wpuf_custom_fields&action=edit&id=<?php echo $row->id; ?>"><img src="<?php echo plugins_url( '', dirname( __FILE__ ) ); ?>/images/edit.png"></a>
+                            <a href="<?php echo wp_nonce_url( "admin.php?page=wpuf_custom_fields&action=del&id=" . $row->id, 'wpuf_del' ) ?>" onclick="return confirm('Are you sure to delete this field?');"><img src="<?php echo plugins_url( '', dirname( __FILE__ ) ); ?>/images/del.png"></a>
                         </td>
 
                     </tr>
@@ -359,6 +362,7 @@ function wpuf_custom_fields_edit() {
                                     <option value="text"<?php selected( $row->type, 'text' ); ?>><?php _e( 'Text Box', 'wpuf' ); ?></option>
                                     <option value="textarea"<?php selected( $row->type, 'textarea' ); ?>><?php _e( 'Text Area', 'wpuf' ); ?></option>
                                     <option value="select"<?php selected( $row->type, 'select' ); ?>><?php _e( 'Dropdown', 'wpuf' ); ?></option>
+                                    <option value="checkbox"<?php selected( $row->type, 'checkbox' ); ?>><?php _e( 'Checkbox', 'wpuf' ); ?></option>
                                 </select>
                                 <span class="description"></span>
                             </td>

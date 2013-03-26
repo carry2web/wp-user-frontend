@@ -67,6 +67,8 @@ class WPUF_Edit_Post {
         //process post
         if ( isset( $_POST['wpuf_edit_post_submit'] ) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'wpuf-edit-post' ) ) {
             $this->submit_post();
+            
+            $curpost = get_post( $post_id );
         }
 
         //show post form
@@ -151,7 +153,7 @@ class WPUF_Edit_Post {
                                     } else if ( $cat_type == 'ajax' ) {
                                         wp_dropdown_categories( 'show_option_none=' . __( '-- Select --', 'wpuf' ) . '&hierarchical=1&hide_empty=0&orderby=name&name=category[]&id=cat-ajax&show_count=0&title_li=&use_desc_for_title=1&class=cat requiredField&depth=1&exclude=' . $exclude . '&selected=' . $selected );
                                     } else {
-                                        wpuf_category_checklist( $curpost->ID );
+                                        wpuf_category_checklist( $curpost->ID, false, 'category', $exclude);
                                     }
                                     ?>
                                 </div>
@@ -258,7 +260,7 @@ class WPUF_Edit_Post {
                 }
             }
         }
-
+        
         if ( empty( $content ) ) {
             $errors[] = __( 'Empty post content', 'wpuf' );
         } else {
@@ -278,11 +280,15 @@ class WPUF_Edit_Post {
             foreach ($fields as $cf) {
                 if ( array_key_exists( $cf['field'], $_POST ) ) {
 
-                    $temp = trim( strip_tags( $_POST[$cf['field']] ) );
+                    if ( is_array( $_POST[$cf['field']] ) ) {
+                        $temp = implode(',', $_POST[$cf['field']]);
+                    } else {
+                        $temp = trim( strip_tags( $_POST[$cf['field']] ) );
+                    }
                     //var_dump($temp, $cf);
 
                     if ( ( $cf['type'] == 'yes' ) && !$temp ) {
-                        $errors[] = sprintf( __( '%s is missing', 'wpuf' ), $cf['label'] );
+                        $errors[] = sprintf( __( '"%s" is missing', 'wpuf' ), $cf['label'] );
                     } else {
                         $custom_fields[$cf['field']] = $temp;
                     }
