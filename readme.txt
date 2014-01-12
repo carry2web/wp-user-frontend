@@ -1,6 +1,6 @@
 === WP User Frontend ===
 Contributors: tareq1988
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=tareq%40wedevs%2ecom&lc=US&item_name=WP%20User%20Frontend&item_number=Tareq%27s%20Planet&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted
+Donate link: http://tareq.wedevs.com/donate/
 Tags: frontend, post, edit, dashboard, restrict, content submission, guest post, guest, dashboard, registration, profile, anonymous post, gravity, gravity forms, formidable
 Requires at least: 3.3
 Tested up to: 3.5.2
@@ -119,6 +119,13 @@ redirected to the edit page with that post id. Then you'll see the edit post for
 
 
 == Changelog ==
+
+= version 1.3 =
+
+ [fix] PayPal payment user_id issue fixed
+ [fix] Plupload `o is null` error fix
+ [fix] PHP 5.4 strict warnings fix
+ [update] new version of settings api class
 
 = version 1.2.3 =
 
