@@ -1,0 +1,478 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WP User Frontend\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-04-14 17:46+0600\n"
+"PO-Revision-Date: Mon Mar 24 2014 10:55:56 GMT+0100 (W. Europe Standard Time)\n"
+"Last-Translator: carry2web <info@carry2web.com>\n"
+"Language-Team: Tareq Hasan <tareq@wedevs.com>\n"
+"Language: Dutch\n"
+"Plural-Forms: nplurals=2; plural=n != 1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: _:1;gettext:1;dgettext:2;ngettext:1,2;dngettext:2,3;__:1;"
+"_e:1;_c:1;_n:1,2;_n_noop:1,2;_nc:1,2;__ngettext:1,2;__ngettext_noop:1,2;_x:1,2c;"
+"_ex:1,2c;_nx:1,2,4c;_nx_noop:1,2,3c;_n_js:1,2;_nx_js:1,2,3c;esc_attr__:1;"
+"esc_html__:1;esc_attr_e:1;esc_html_e:1;esc_attr_x:1,2c;esc_html_x:1,2c;"
+"comments_number_link:2,3;t:1;st:1;trans:1;transChoice:1,2\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: Bangladesh\n"
+"X-Poedit-SearchPath-0: ..\n"
+"X-Loco-Target-Locale: nl_NL\n"
+"X-Generator: Loco - https://localise.biz/"
+
+#: ../wpuf.php:179
+msgid ""
+"You need to set your <a href=\"%1$s\">permalink custom structure</a> to at least "
+"contain <b>/&#37;postname&#37;/</b> before WP User Frontend will work properly."
+msgstr ""
+"Voor een correcte werking van  WP User Frontend moet je je <a "
+"href=\"%1$s\">permalink site structuur</a> tenminste instellen dat  <b>/&#37;"
+"postname&#37;/</b> er in voorkomt."
+
+#: ../wpuf.php:268
+msgid "You must purchase a pack before posting"
+msgstr "Je moet een bijdragepakket aanschaffen voordat je op deze site kunt publiceren"
+
+#: ../wpuf-dashboard.php:110
+msgid "Payment"
+msgstr "Betaling"
+
+#: ../wpuf-dashboard.php:111
+msgid "Options"
+msgstr "Opties"
+
+#: ../wpuf-subscription.php:246
+#: ../wpuf-subscription.php:256
+msgid "Click here to complete the pack on %s"
+msgstr "Klik hier voor een bijdragepakket op %s"
+
+#: ../wpuf-subscription.php:450
+msgid "Unlimited duration"
+msgstr "Onbeperkte duur"
+
+#: ../wpuf-subscription.php:452
+msgid "Expired"
+msgstr "Verlopen"
+
+#: ../wpuf-subscription.php:466
+msgid "Subscription Details"
+msgstr "Abonnement Details"
+
+#: ../wpuf-subscription.php:468
+#: ../wpuf-editprofile.php:280
+msgid "Validity:"
+msgstr "Geldig tot:"
+
+#: ../wpuf-subscription.php:469
+msgid "Post Left:"
+msgstr "Berichten tegoed:"
+
+#: ../wpuf-subscription.php:512
+msgid ""
+"This will cost you <strong>%s</strong>. to add a new post. You may buy some "
+"bulk package too. "
+msgstr ""
+"Het kost je <strong>%s</strong>. om een nieuw berciht toe te voegen. Je kunt "
+"ook overwegen om een bulk bijdragepakket aan te schaffen. "
+
+#: ../wpuf-editprofile.php:264
+msgid "WPUF Subscription"
+msgstr "WPUF abonnement"
+
+#: ../wpuf-editprofile.php:268
+msgid "Pack:"
+msgstr "Pakket:"
+
+#: ../wpuf-edit-user.php:203
+msgid ""
+"<strong>ERROR</strong>: This username is invalid because it uses illegal "
+"characters. Please enter a valid username."
+msgstr ""
+"<strong>ERROR</strong>: This username is invalid because it uses illegal "
+"characters. Please enter a valid username."
+
+#: ../wpuf-edit-user.php:206
+msgid ""
+"<strong>ERROR</strong>: This username is already registered, please choose "
+"another one."
+msgstr ""
+"<strong>ERROR</strong>: This username is already registered, please choose "
+"another one."
+
+#: ../wpuf-edit-user.php:211
+msgid "<strong>ERROR</strong>: Please type your e-mail address."
+msgstr "<strong>ERROR</strong>: Please type your e-mail address."
+
+#: ../wpuf-edit-user.php:213
+msgid "<strong>ERROR</strong>: The email address isn&#8217;t correct."
+msgstr "<strong>FOUT</strong>: Dit email adres is niet correct."
+
+#: ../wpuf-edit-user.php:216
+msgid ""
+"<strong>ERROR</strong>: This email is already registered, please choose another "
+"one."
+msgstr "<strong>FOUT</strong>: Dit email adres bestaat al, kies a.u.b. een ander adres."
+
+#: ../wpuf-edit-user.php:239
+msgid ""
+"<strong>ERROR</strong>: Couldn&#8217;t register you... please contact the <a "
+"href=\"mailto:%s\">webmaster</a> !"
+msgstr ""
+"<strong>ERROR</strong>: Couldn&#8217;t register you... please contact the <a "
+"href=\"mailto:%s\">webmaster</a> !"
+
+#: ../wpuf-functions.php:63
+msgid "Live"
+msgstr "Gepubliceerd"
+
+#: ../wpuf-functions.php:67
+msgid "Offline"
+msgstr "Niet gepubliceerd"
+
+#: ../wpuf-edit-post.php:74
+msgid "Invalid post id"
+msgstr "Ongeldig berichten id"
+
+#: ../extra/custom_hooks.php:131
+msgid "[%s] Payment Received"
+msgstr "[%s] Betaling ontvangen"
+
+#: ../extra/custom_hooks.php:132
+msgid "New payment received at %s"
+msgstr "Nieuwe betaling ontvangen op %s"
+
+#: ../admin/wpuf-admin-subscription.php:118
+msgid "Add Package"
+msgstr "Pakket toevoegen"
+
+#: ../admin/wpuf-admin-subscription.php:244
+msgid "Update Package"
+msgstr "Pakket bijwerken"
+
+#: ../wpuf.php:167
+msgid ""
+"Access Denied. Your site administrator has blocked your access to the WordPress "
+"back-office."
+msgstr ""
+"Toegang geweigerd. Uw site beheerder heeft uw toegang tot de WordPress back-"
+"office geblokkeerd."
+
+#: ../wpuf.php:236
+#: ../wpuf-add-post.php:76
+#: ../wpuf-edit-post.php:119
+msgid "-- Select --"
+msgstr "-- Maak keuze --"
+
+#: ../wpuf-dashboard.php:22
+#: ../wpuf-add-post.php:19
+#: ../wpuf-editprofile.php:15
+#: ../wpuf-edit-user.php:36
+#: ../wpuf-edit-post.php:15
+msgid "This page is restricted. Please %s to view this page."
+msgstr "Toegang tot deze pagina is beperkt. Gelieve %s om deze pagina te bekijken."
+
+#: ../wpuf-dashboard.php:57
+msgid "Post Deleted"
+msgstr "Bericht verwijderd"
+
+#: ../wpuf-dashboard.php:59
+msgid "You are not the post author. Cheeting huh!"
+msgstr "Je bent niet de auteur van dit bericht!"
+
+#: ../wpuf-dashboard.php:79
+msgid "&laquo;"
+msgstr "&laquo;"
+
+#: ../wpuf-dashboard.php:80
+msgid "&raquo;"
+msgstr "&raquo;"
+
+#: ../wpuf-dashboard.php:94
+msgid "%s's Dashboard"
+msgstr "Dashboard van %s"
+
+#: ../wpuf-dashboard.php:99
+msgid "You have created"
+msgstr "Je hebt gemaakt"
+
+#: ../wpuf-dashboard.php:107
+msgid "Title"
+msgstr "Titel"
+
+#: ../wpuf-dashboard.php:108
+msgid "Status"
+msgstr "Status"
+
+#: ../wpuf-dashboard.php:150
+#: ../wpuf-edit-user.php:96
+msgid "Edit"
+msgstr "WIjzigen"
+
+#: ../wpuf-dashboard.php:156
+#: ../wpuf-edit-user.php:97
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: ../wpuf-dashboard.php:171
+msgid "Currently you have no post"
+msgstr "Je hebt momenteel geen berichten"
+
+#: ../wpuf-dashboard.php:178
+msgid "Author Info"
+msgstr "Auteur Info"
+
+#: ../wpuf-subscription.php:495
+msgid "Buy Now"
+msgstr "Koop nu"
+
+#: ../wpuf-add-post.php:42
+msgid "Post It!"
+msgstr "Publiceer!"
+
+#: ../wpuf-add-post.php:146
+msgid "Cheating?"
+msgstr "Valsspelen?"
+
+#: ../wpuf-add-post.php:182
+#: ../wpuf-edit-post.php:201
+msgid "Empty post title"
+msgstr "Lege berichttitel"
+
+#: ../wpuf-add-post.php:189
+msgid "Please choose a category"
+msgstr "Kies je categorie"
+
+#: ../wpuf-add-post.php:194
+#: ../wpuf-edit-post.php:207
+msgid "Empty post content"
+msgstr "Lege berichtinhoud"
+
+#: ../wpuf-add-post.php:220
+#: ../wpuf-edit-post.php:229
+msgid "%s is missing"
+msgstr "%s ontbreekt"
+
+#: ../wpuf-editprofile.php:56
+msgid "<strong>Success</strong>: Profile updated"
+msgstr "<strong>Gelukt</strong>: Profiel bijgewerkt"
+
+#: ../wpuf-editprofile.php:82
+msgid "Name"
+msgstr "Naam"
+
+#: ../wpuf-editprofile.php:86
+#: ../wpuf-edit-user.php:89
+#: ../wpuf-edit-user.php:141
+msgid "Username"
+msgstr "Gebruikersnaam"
+
+#: ../wpuf-editprofile.php:87
+msgid "Usernames cannot be changed."
+msgstr "Gebruikernaam kan niet worden aangepast."
+
+#: ../wpuf-editprofile.php:90
+msgid "First Name"
+msgstr "Voornaam"
+
+#: ../wpuf-editprofile.php:95
+msgid "Last Name"
+msgstr "Achternaam"
+
+#: ../wpuf-editprofile.php:100
+msgid "Nickname"
+msgstr "Bijnaam"
+
+#: ../wpuf-editprofile.php:100
+#: ../wpuf-editprofile.php:141
+msgid "(required)"
+msgstr "(verplicht)"
+
+#: ../wpuf-editprofile.php:105
+msgid "Display to Public as"
+msgstr "Weergave aan Publiek"
+
+#: ../wpuf-editprofile.php:137
+msgid "Contact Info"
+msgstr "Contact Info"
+
+#: ../wpuf-editprofile.php:141
+msgid "E-mail"
+msgstr "E-mail"
+
+#: ../wpuf-editprofile.php:146
+msgid "Website"
+msgstr "Website"
+
+#: ../wpuf-editprofile.php:164
+msgid "About Yourself"
+msgstr "Vertel wat over jezelf"
+
+#: ../wpuf-editprofile.php:168
+msgid "Biographical Info"
+msgstr "Biografie"
+
+#: ../wpuf-editprofile.php:170
+msgid ""
+"Share a little biographical information to fill out your profile. This may be "
+"shown publicly."
+msgstr "Deel wat biografische gegevens voor uw profiel. Dit kan openbaar worden gemaakt."
+
+#: ../wpuf-editprofile.php:173
+msgid "New Password"
+msgstr "Nieuw wachtwoord"
+
+#: ../wpuf-editprofile.php:179
+msgid "Confirm Password"
+msgstr "Bevestig wachtwoord"
+
+#: ../wpuf-editprofile.php:181
+msgid "Type your new password again."
+msgstr "Sterkte indicator"
+
+#: ../wpuf-editprofile.php:186
+msgid "Password Strength"
+msgstr "Sterkte van het wachtwoord"
+
+#: ../wpuf-editprofile.php:188
+msgid "Strength indicator"
+msgstr "Sterkte indicator"
+
+#: ../wpuf-editprofile.php:211
+msgid "Update Profile"
+msgstr "Bijwerken Profiel"
+
+#: ../wpuf-editprofile.php:230
+msgid "WPUF Post Lock"
+msgstr "WPUF bericht vergrendelen"
+
+#: ../wpuf-editprofile.php:233
+msgid "Lock Post:"
+msgstr "Bericht vergrendelen"
+
+#: ../wpuf-editprofile.php:239
+msgid "Lock user from creating new post."
+msgstr "Gebruiker kan geen nieuw bericht meer schrijven"
+
+#: ../wpuf-editprofile.php:244
+msgid "Lock Reason:"
+msgstr "Reden:"
+
+#: ../wpuf-editprofile.php:274
+msgid "Post Count:"
+msgstr "Berichten teller:"
+
+#: ../wpuf-edit-user.php:22
+msgid "User doesn't exists"
+msgstr "Gebruiker bestaat niet"
+
+#: ../wpuf-edit-user.php:33
+msgid "You don't have permission for this purpose"
+msgstr "Je hebt geen permissies voor deze aktie"
+
+#: ../wpuf-edit-user.php:74
+msgid "User Deleted"
+msgstr "Gebruiker verwijderd"
+
+#: ../wpuf-edit-user.php:90
+msgid "Action"
+msgstr "Actie"
+
+#: ../wpuf-edit-user.php:116
+#: ../wpuf-edit-user.php:174
+msgid "Add New User"
+msgstr "Gebruiker toevoegen"
+
+#: ../wpuf-edit-user.php:129
+msgid "User Added"
+msgstr "Gebruiker toegevoegd"
+
+#: ../wpuf-edit-user.php:149
+msgid "Email"
+msgstr "Email"
+
+#: ../wpuf-edit-user.php:157
+msgid "Role"
+msgstr "Rol"
+
+#: ../wpuf-edit-user.php:201
+msgid "<strong>ERROR</strong>: Please enter a username."
+msgstr "<strong>ERROR</strong>: Please enter a username."
+
+#: ../wpuf-functions.php:71
+msgid "Awaiting Approval"
+msgstr "Wacht op goedkeuring"
+
+#: ../wpuf-functions.php:74
+msgid "Scheduled"
+msgstr "Ingepland"
+
+#: ../wpuf-functions.php:99
+msgid "Please wait..."
+msgstr "Wachten aub..."
+
+#: ../wpuf-functions.php:247
+msgid "Attachment file is too big"
+msgstr "Bijlage bestand is te groot"
+
+#: ../wpuf-functions.php:252
+msgid "Invalid attachment file type"
+msgstr "Bijlage bestand niet toegestane bestand extensie"
+
+#: ../wpuf-edit-post.php:68
+msgid "Invalid post"
+msgstr "Ongeldig bericht"
+
+#: ../wpuf-edit-post.php:71
+msgid "Post Editing is disabled"
+msgstr "Berichten bewerking is uitgezet-"
+
+#: ../wpuf-edit-post.php:162
+msgid "Update"
+msgstr "Bijwerken"
+
+#: ../wpuf-edit-post.php:254
+msgid "Post updated succesfully."
+msgstr "Bericht is goed bijgewerkt."
+
+#: ../extra/custom_hooks.php:25
+msgid "Publish Time:"
+msgstr "Publicatie tijdstip:"
+
+#: ../extra/custom_hooks.php:54
+msgid "Expiration Time:"
+msgstr "Verlopen tijdstip:"
+
+#: ../extra/custom_hooks.php:64
+msgid "Post expiration time in hour after publishing."
+msgstr "Bericht vervalt na opgegeven uren na publicatietijdstip."
+
+#: ../admin/wpuf-admin.php:12
+msgid "Options saved"
+msgstr "Instellingen opgeslagen"
+
+#: ../admin/wpuf-admin.php:32
+#: ../admin/wpuf-admin.php:43
+msgid "Save Changes"
+msgstr "Wijzigingen opslaan"
+
+#: ../admin/wpuf-admin.php:75
+msgid "Settings Saved"
+msgstr "Instellingen opgeslagen"
+
+#: ../admin/wpuf-options-value.php:233
+msgid "Your settings have been saved."
+msgstr "Je instellingen zijn opgeslagen."
+
+#: ../admin/wpuf-admin-meta.php:86
+#: ../admin/wpuf-admin-taxonomy.php:86
+msgid "Add Field"
+msgstr "Veld toevoegen"
+
+#: ../admin/wpuf-admin-meta.php:241
+#: ../admin/wpuf-admin-taxonomy.php:241
+msgid "Update Field"
+msgstr "Veld bijwerken"
